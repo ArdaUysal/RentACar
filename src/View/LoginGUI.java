@@ -8,6 +8,7 @@ import javax.swing.border.EmptyBorder;
 
 import Helper.DBConnection;
 import Model.Admin;
+import Model.User;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -55,7 +56,7 @@ public class LoginGUI extends JFrame {
 	 * Create the frame.
 	 */
 	public LoginGUI() {
-		setTitle("Araba Kiralama");
+		setTitle("Rent Araç Kiralama");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 562, 470);
 		w_pane = new JPanel();
@@ -71,14 +72,14 @@ public class LoginGUI extends JFrame {
 		
 		JLabel lblNewLabel = new JLabel("Rent Araç Kiralamaya Hoşgeldiniz");
 		lblNewLabel.setFont(new Font("Lucida Grande", Font.BOLD, 23));
-		lblNewLabel.setBounds(88, 172, 406, 49);
+		lblNewLabel.setBounds(91, 150, 406, 49);
 		w_pane.add(lblNewLabel);
 		
 		JTabbedPane w_tabpane = new JTabbedPane(JTabbedPane.TOP);
 		w_tabpane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		w_tabpane.setForeground(new Color(255, 255, 255));
 		w_tabpane.setBackground(new Color(0, 0, 0));
-		w_tabpane.setBounds(17, 211, 539, 225);
+		w_tabpane.setBounds(6, 211, 550, 225);
 		w_pane.add(w_tabpane);
 		
 		JPanel panel = new JPanel();
@@ -106,10 +107,57 @@ public class LoginGUI extends JFrame {
 		panel.add(fld_user_pass);
 		
 		JButton btn_user_login = new JButton("Giriş Yap");
+		btn_user_login.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(fld_user_email.getText().length() == 0 || fld_user_pass.getText().length() == 0) {
+					JOptionPane.showMessageDialog(null, "Lütfen boş alanları doldurunuz.");
+				} else {
+					try {
+						Connection con = dbcon.connDb();
+						Statement st = con.createStatement();
+						ResultSet rs = st.executeQuery("SELECT * FROM users");
+						boolean login = false;
+						while(rs.next()) {
+							if(fld_user_email.getText().equals(rs.getString("email")) && fld_user_pass.getText().equals(rs.getString("password"))) {
+								User user = new User();
+								user.setId(rs.getInt("id"));
+								user.setName(rs.getString("name"));
+								user.setSurname(rs.getString("surname"));
+								user.setEmail(rs.getString("email"));
+								user.setPassword(rs.getString("password"));
+								UserGUI userGUI = new UserGUI(user);
+								userGUI.setVisible(true);
+								dispose();
+								login = true;
+								break;
+							}
+						}
+						if(!login) {
+							JOptionPane.showMessageDialog(null, "Girmiş olduğunuz e-posta veya parola yanlış.");
+							fld_user_email.setText(null);
+							fld_user_pass.setText(null);
+						}
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
+					
+				}
+			}
+		});
 		btn_user_login.setBounds(43, 116, 209, 43);
 		panel.add(btn_user_login);
 		
 		JButton btn_user_register = new JButton("Kayıt Ol");
+		btn_user_register.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				User user = new User();
+				UserRegisterGUI userRegisterGUI = new UserRegisterGUI(user);
+				userRegisterGUI.setVisible(true);
+				dispose();
+			}
+		});
 		btn_user_register.setBounds(275, 116, 209, 43);
 		panel.add(btn_user_register);
 		
@@ -147,6 +195,7 @@ public class LoginGUI extends JFrame {
 						Connection con = dbcon.connDb();
 						Statement st = con.createStatement();
 						ResultSet rs = st.executeQuery("SELECT * FROM admins");
+						boolean login = false;
 						while(rs.next()) {
 							if(fld_admin_email.getText().equals(rs.getString("email")) && fld_admin_pass.getText().equals(rs.getString("password"))) {
 								Admin admin = new Admin();
@@ -158,7 +207,14 @@ public class LoginGUI extends JFrame {
 								AdminGUI adminGUI = new AdminGUI(admin);
 								adminGUI.setVisible(true);
 								dispose();
+								login = true;
+								break;
 							}
+						}
+						if(!login) {
+							JOptionPane.showMessageDialog(null, "Girmiş olduğunuz e-posta veya parola yanlış.");
+							fld_admin_email.setText(null);
+							fld_admin_pass.setText(null);
 						}
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
@@ -169,5 +225,10 @@ public class LoginGUI extends JFrame {
 		});
 		btn_admin_login.setBounds(22, 119, 476, 43);
 		panel_1.add(btn_admin_login);
+		
+		JLabel lblNewLabel_1 = new JLabel("Eğer hesabınız yoksa kayıt ol butonundan hesap oluşturabilirsiniz.");
+		lblNewLabel_1.setFont(new Font("Lucida Grande", Font.PLAIN, 17));
+		lblNewLabel_1.setBounds(6, 189, 550, 26);
+		w_pane.add(lblNewLabel_1);
 	}
 }

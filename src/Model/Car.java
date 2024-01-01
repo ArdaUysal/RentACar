@@ -3,9 +3,9 @@ package Model;
 public class Car {
 	private int id;
 	String brand, gear, fuel;
-	int capacity, deposit, rental_fee;
-	
-	public Car(int id, String brand, String gear, String fuel, int capacity, int deposit, int rental_fee) {
+	int capacity, deposit, rental_fee, count;
+		
+	public Car(int id, String brand, String gear, String fuel, int capacity, int deposit, int rental_fee, int count) {
 		this.id = id;
 		this.brand = brand;
 		this.gear = gear;
@@ -13,6 +13,7 @@ public class Car {
 		this.capacity = capacity;
 		this.deposit = deposit;
 		this.rental_fee = rental_fee;
+		this.count = count;	
 	}
 
 	public Car() {}
@@ -72,6 +73,16 @@ public class Car {
 	public void setRental_fee(int rental_fee) {
 		this.rental_fee = rental_fee;
 	}
+	
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+	
+	
 	
 	
 	

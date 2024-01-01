@@ -38,6 +38,7 @@ public class Admin extends User {
 				car.setCapacity(rs.getInt("capacity"));
 				car.setDeposit(rs.getInt("deposit"));
 				car.setRental_fee(rs.getInt("rental_fee"));
+				car.setCount(rs.getInt("count"));
 				carList.add(car);
 			}
 		} catch (SQLException e) {
@@ -50,8 +51,8 @@ public class Admin extends User {
 		
 	}
 	
-	public boolean addCar(String brand, String gear, String fuel, int capacity, int deposit, int rental_fee) throws SQLException {
-		String sorgu = "INSERT INTO cars (brand,gear,fuel,capacity,deposit,rental_fee)" + "VALUES(?,?,?,?,?,?)";
+	public boolean addCar(String brand, String gear, String fuel, int capacity, int deposit, int rental_fee, int count) throws SQLException {
+		String sorgu = "INSERT INTO cars (brand,gear,fuel,capacity,deposit,rental_fee,count)" + "VALUES(?,?,?,?,?,?,?)";
 		boolean key = false;
 		try {
 			st = con.createStatement();
@@ -62,6 +63,54 @@ public class Admin extends User {
 			preparedStatement.setInt(4,capacity);
 			preparedStatement.setInt(5, deposit);
 			preparedStatement.setInt(6, rental_fee);
+			preparedStatement.setInt(7, count);
+			preparedStatement.executeUpdate();
+			key = true;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(key) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean deleteCar(int id) throws SQLException {
+		String sorgu = "DELETE FROM cars WHERE id = ?";
+		boolean key = false;
+		try {
+			st = con.createStatement();
+			preparedStatement = con.prepareStatement(sorgu);
+			preparedStatement.setInt(1,id);
+			preparedStatement.executeUpdate();
+			key = true;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(key) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean updateCar(int id,String brand,String gear,String fuel,int capacity,int deposit,int rental_fee, int count) throws SQLException {
+		String sorgu = "UPDATE cars SET brand = ?, gear = ?, fuel = ?, capacity = ?, deposit = ?, rental_fee = ?, count = ? WHERE id = ?";
+		boolean key = false;
+		try {
+			st = con.createStatement();
+			preparedStatement = con.prepareStatement(sorgu);
+			preparedStatement.setString(1,brand);
+			preparedStatement.setString(2,gear);
+			preparedStatement.setString(3,fuel);
+			preparedStatement.setInt(4,capacity);
+			preparedStatement.setInt(5,deposit);
+			preparedStatement.setInt(6,rental_fee);
+			preparedStatement.setInt(7,count);
+			preparedStatement.setInt(8,id);
 			preparedStatement.executeUpdate();
 			key = true;
 		}
